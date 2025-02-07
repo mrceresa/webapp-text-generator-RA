@@ -4,11 +4,11 @@ export const API_KEY = `${process.env.NEXT_PUBLIC_APP_KEY}`
 export const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
 export const IS_WORKFLOW = `${process.env.NEXT_PUBLIC_APP_TYPE_WORKFLOW}` === 'true'
 export const APP_INFO: AppInfo = {
-  title: 'Text Generator APP',
-  description: 'App description',
+  title: 'F7 friendly scientific assistant',
+  description: 'You can use this app to search information about a topic on the web and prepare a report with full citations. Just input the topic title and the report will be generated.',
   copyright: '',
   privacy_policy: '',
-  default_language: 'en-US',
+  default_language: 'en',
 }
 
 export const API_PREFIX = '/api'

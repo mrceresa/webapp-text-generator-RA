@@ -5,7 +5,7 @@ import cn from 'classnames'
 import { useBoolean, useClickAway } from 'ahooks'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import RunOnce from './run-once'
-import RunBatch from './run-batch'
+
 import ResDownload from './run-batch/res-download'
 import Result from './result'
 import Button from './base/button'
@@ -264,40 +264,7 @@ const TextGeneration = () => {
     return true
   }
 
-  const handleRunBatch = (data: string[][]) => {
-    if (!checkBatchInputs(data))
-      return
-    if (!allTaskFinished) {
-      notify({ type: 'info', message: t('appDebug.errorMessage.waitForBatchResponse') })
-      return
-    }
 
-    const payloadData = data.filter(item => !item.every(i => i === '')).slice(1)
-    const varLen = promptConfig?.prompt_variables.length || 0
-    setIsCallBatchAPI(true)
-    const allTaskList: Task[] = payloadData.map((item, i) => {
-      const inputs: Record<string, string> = {}
-      if (varLen > 0) {
-        item.slice(0, varLen).forEach((input, index) => {
-          inputs[promptConfig?.prompt_variables[index].key as string] = input
-        })
-      }
-      return {
-        id: i + 1,
-        status: i < GROUP_SIZE ? TaskStatus.running : TaskStatus.pending,
-        params: {
-          inputs,
-        },
-      }
-    })
-    setAllTaskList(allTaskList)
-
-    setControlSend(Date.now())
-    // clear run once task status
-    setControlStopResponding(Date.now())
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    showResSidebar()
-  }
 
   const handleCompleted = (completionRes: string, taskId?: number, isSuccess?: boolean) => {
     const allTasklistLatest = getLatestTaskList()
@@ -500,7 +467,6 @@ const TextGeneration = () => {
           <TabHeader
             items={[
               { id: 'create', name: t('app.generation.tabs.create') },
-              { id: 'batch', name: t('app.generation.tabs.batch') },
             ]}
             value={currTab}
             onChange={setCurrTab}
@@ -515,13 +481,6 @@ const TextGeneration = () => {
                 onSend={handleSend}
                 visionConfig={visionConfig}
                 onVisionFilesChange={setCompletionFiles}
-              />
-            </div>
-            <div className={cn(isInBatchTab ? 'block' : 'hidden')}>
-              <RunBatch
-                vars={promptConfig.prompt_variables}
-                onSend={handleRunBatch}
-                isAllFinished={allTaskRuned}
               />
             </div>
           </div>
